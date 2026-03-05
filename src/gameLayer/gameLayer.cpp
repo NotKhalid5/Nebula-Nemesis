@@ -122,9 +122,28 @@ bool gameLogic(float deltaTime) {
 
 #pragma endregion
 
+#pragma region mouse pos 
+
+	glm::vec2 mousePos = platform::getRelMousePosition();
+	glm::vec2 screenCenter(w / 2.f, h / 2.f); // vec pointing 2 mid of scr
+
+	glm::vec2 mouseDirection = mousePos - screenCenter;
+
+	if (glm::length(mouseDirection) == 0.f) {
+		mouseDirection = {1, 0}; // if 0 set 2 arb dir
+	}
+	else {
+		mouseDirection = normalize(mouseDirection);
+	}
+
+	float spaceShipAngle = atan2(mouseDirection.y, -mouseDirection.x);
+
+#pragma endregion
+
 	renderer.currentCamera.follow(data.playerPos, deltaTime * 2000, 10, 200, w,h); // tracks plyr (I wanteed the camera speed to match the speed of the plyr's mvmnts)
 
-	renderer.renderRectangle({data.playerPos, 200, 200}, spaceShipTexture);
+	renderer.renderRectangle({data.playerPos, 200, 200}, spaceShipTexture,
+		Colors_White, {}, glm::degrees(spaceShipAngle) + 90.f);
 
  
 	renderer.flush(); // called once
