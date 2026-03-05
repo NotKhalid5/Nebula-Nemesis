@@ -10,6 +10,7 @@
 #include "imfilebrowser.h"
 #include <gl2d/gl2d.h>
 #include <platformTools.h>
+#include <tiledRenderer.h>
 
 
 struct GameplayData { // place gameplay inside a struct so easier to reset the game correctly
@@ -21,6 +22,9 @@ GameplayData data;
 gl2d::Renderer2D renderer;
 
 gl2d::Texture spaceShipTexture;
+gl2d::Texture backgroundTexture;
+
+TiledRenderer tiledRenderer; // created TitledRenderer instance
 
 bool initGame() {
 	// initializing renderer
@@ -28,6 +32,9 @@ bool initGame() {
 	renderer.create();
 
 	spaceShipTexture.loadFromFile(RESOURCES_PATH "spaceShip/ships/green.png", true); // path specific; true param tells gpu u wanna keep the texture pixelated
+	backgroundTexture.loadFromFile(RESOURCES_PATH "background1.png", true);
+	
+	tiledRenderer.texture = backgroundTexture; // set TR inst texture
 	
 	return true;
 }
@@ -87,12 +94,21 @@ bool gameLogic(float deltaTime) {
 	if (move.x != 0 || move.y != 0) {
 		move =glm::normalize(move); // normalize vector so diagonal movement doesn't exceed intention
 
-		move *= deltaTime * 200; // 200 px/sec (mult 2 make mvmnt constant); deltaTime is the time of the last frame n sec
+		move *= deltaTime * 2000; // 200 px/sec (mult 2 make mvmnt constant); deltaTime is the time of the last frame n sec
 		data.playerPos += move;
 		
 	}
 
 #pragma endregion
+
+#pragma region render bg
+	renderer.currentCamera.zoom = 1.1; // changes how much the cam can c
+
+	tiledRenderer.render(renderer); 
+
+#pragma endregion
+
+	renderer.currentCamera.follow(data.playerPos, deltaTime * 2000, 10, 200, w,h); // tracks plyr (I wanteed the camera speed to match the speed of the plyr's mvmnts)
 
 	renderer.renderRectangle({data.playerPos, 200, 200}, spaceShipTexture);
 
