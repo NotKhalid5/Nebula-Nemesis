@@ -12,6 +12,11 @@
 #include <platformTools.h>
 
 
+struct GameplayData { // place gameplay inside a struct so easier to reset the game correctly
+	glm::vec2 playerPos = {100, 100};
+};
+
+GameplayData data;
 
 gl2d::Renderer2D renderer;
 
@@ -42,8 +47,54 @@ bool gameLogic(float deltaTime) {
 #pragma endregion
 
 
+#pragma region movement
 
-	renderer.renderRectangle({100,100, 100, 100}, spaceShipTexture);
+	glm::vec2 move = {};
+
+	// 4 each single gameplay input map controls
+	if (
+		platform::isButtonHeld(platform::Button::W) ||
+		platform::isButtonHeld(platform::Button::Up)
+		)
+	{
+		move.y = -1;
+	}
+
+	if (
+		platform::isButtonHeld(platform::Button::A) ||
+		platform::isButtonHeld(platform::Button::Left)
+		)
+	{
+		move.x = -1;
+	}
+
+	if (
+		platform::isButtonHeld(platform::Button::S) ||
+		platform::isButtonHeld(platform::Button::Down)
+		)
+	{
+		move.y = 1;
+	}
+
+	if (
+		platform::isButtonHeld(platform::Button::D) ||
+		platform::isButtonHeld(platform::Button::Right)
+		)
+	{
+		move.x = 1;
+	}
+	
+	if (move.x != 0 || move.y != 0) {
+		move =glm::normalize(move); // normalize vector so diagonal movement doesn't exceed intention
+
+		move *= deltaTime * 200; // 200 px/sec (mult 2 make mvmnt constant); deltaTime is the time of the last frame n sec
+		data.playerPos += move;
+		
+	}
+
+#pragma endregion
+
+	renderer.renderRectangle({data.playerPos, 200, 200}, spaceShipTexture);
 
 
 	renderer.flush(); // called once
