@@ -15,11 +15,11 @@ void TiledRenderer::render(gl2d::Renderer2D &renderer) {
 
             renderer.renderRectangle(
                 glm::vec4{xPos, yPos, 1, 1} * backgroundSize
-                + glm::vec4(paralaxDistance,0,0), texture); // add val 2 rendering call so bg moves slower
+                + glm::vec4(paralaxDistance, 0, 0), texture); // add val 2 rendering call so bg moves slower
         }
     }
 	
-	renderer.renderRectangle({0,0, 10000, 10000}, texture);
+	renderer.renderRectangle({0, 0, 10000, 10000}, texture);
 
 
 	

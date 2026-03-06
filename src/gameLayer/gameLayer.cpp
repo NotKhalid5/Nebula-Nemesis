@@ -142,7 +142,7 @@ bool gameLogic(float deltaTime) {
 
 
 #pragma region render bg
-	renderer.currentCamera.zoom = 1.1; // changes how much the cam can c
+	renderer.currentCamera.zoom = 1; // changes how much the cam can c
 
 	for (int i = 0; i < BACKGROUNDS; i++) {
 		tiledRenderer[i].render(renderer); 
@@ -179,6 +179,7 @@ bool gameLogic(float deltaTime) {
 	for (int i = 0; i < data.bullets.size(); i++) {
 		if (glm::distance(data.bullets[i].position, data.playerPos) > 5000) {
 			data.bullets.erase(data.bullets.begin() + i);
+			i--;
 			continue;
 		}
 		
@@ -203,6 +204,12 @@ bool gameLogic(float deltaTime) {
 
 	//ImGui::ShowDemoWindow();
 
+	// setup workflow optimization 
+	ImGui::Begin("debug");
+
+	ImGui::Text("Bullet count: %d", data.bullets.size()); // montiors whether bullets deload properly to avoid game crash
+
+	ImGui::End();
 
 	return true;
 #pragma endregion
