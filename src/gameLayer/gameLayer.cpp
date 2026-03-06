@@ -168,15 +168,22 @@ bool gameLogic(float deltaTime) {
 
 
 #pragma region handle bullets
-	if (platform::isLMousePressed()) {
+	if (platform::isLMousePressed() || platform::isRMouseHeld()) { // allow both mouse btns 2 b used 4 shooting (mcl)
 		Bullet b;
 		b.position = data.playerPos;
 		b.fireDirection = mouseDirection;
 
-		data.bullets.push_back(b);
+		data.bullets.push_back(b); // moved logic from its own 4 loop n 2 a comb 1 w/ rotating logic
 	}
 
-	for (auto &b : data.bullets) {b.update(deltaTime);}
+	for (int i = 0; i < data.bullets.size(); i++) {
+		if (glm::distance(data.bullets[i].position, data.playerPos) > 5000) {
+			data.bullets.erase(data.bullets.begin() + i);
+			continue;
+		}
+		
+		data.bullets[i].update(deltaTime);
+	}
 #pragma endregion
 
 
