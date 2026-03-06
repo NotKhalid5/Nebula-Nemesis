@@ -21,11 +21,14 @@ GameplayData data;
 
 gl2d::Renderer2D renderer;
 
-constexpr int BACKGROUNDS = 3;
+constexpr int BACKGROUNDS = 4;
 
-gl2d::Texture spaceShipTexture;
+gl2d::Texture spaceShipsTexture;
+gl2d::TextureAtlasPadding spaceShipsAtlas;
+
+// gl2d::Texture spaceShipTexture;
+
 gl2d::Texture backgroundTexture[BACKGROUNDS]; // subsequently make an arr of Texture obj 2, 2 correspond w/ TR objs
-
 TiledRenderer tiledRenderer[BACKGROUNDS]; // 2 implement paralax, created mult TR insts n n array 
 
 bool initGame() {
@@ -33,19 +36,25 @@ bool initGame() {
 	gl2d::init();
 	renderer.create();
 
-	spaceShipTexture.loadFromFile(RESOURCES_PATH "spaceShip/ships/green.png", true); // path specific; true param tells gpu u wanna keep the texture pixelated
+	spaceShipsTexture.loadFromFileWithPixelPadding(RESOURCES_PATH "spaceShip/stitchedFiles/spaceships.png", 128, true);
+	spaceShipsAtlas = gl2d::TextureAtlasPadding(5, 2, spaceShipsTexture.GetSize().x, spaceShipsTexture.GetSize().y);
+
+	// spaceShipTexture.loadFromFile(RESOURCES_PATH "spaceShip/ships/green.png", true); // path specific; true param tells gpu u wanna keep the texture pixelated
 	backgroundTexture[0].loadFromFile(RESOURCES_PATH "background1.png", true);
 	backgroundTexture[1].loadFromFile(RESOURCES_PATH "background2.png", true);
 	backgroundTexture[2].loadFromFile(RESOURCES_PATH "background3.png", true);
+	backgroundTexture[3].loadFromFile(RESOURCES_PATH "background4.png", true);
 	
 	// set TR insts textures
 	tiledRenderer[0].texture = backgroundTexture[0]; 
 	tiledRenderer[1].texture = backgroundTexture[1];
 	tiledRenderer[2].texture = backgroundTexture[2];
+	tiledRenderer[3].texture = backgroundTexture[3];
 
-	tiledRenderer[0].paralaxStrength = 0;
-    tiledRenderer[1].paralaxStrength = 0.5;
-    tiledRenderer[2].paralaxStrength = 0.7;
+	tiledRenderer[0].paralaxStrength = 0.0f;
+    tiledRenderer[1].paralaxStrength = 0.5f;
+    tiledRenderer[2].paralaxStrength = 0.7f;
+	tiledRenderer[3].paralaxStrength = 0.9f;
 
 	
 	return true;
@@ -140,10 +149,15 @@ bool gameLogic(float deltaTime) {
 
 #pragma endregion
 
+#pragma region camera follow
 	renderer.currentCamera.follow(data.playerPos, deltaTime * 2000, 10, 200, w,h); // tracks plyr (I wanteed the camera speed to match the speed of the plyr's mvmnts)
+#pragma endregion 
 
-	renderer.renderRectangle({data.playerPos, 200, 200}, spaceShipTexture,
-		Colors_White, {}, glm::degrees(spaceShipAngle) + 90.f);
+#pragma region render ship
+	constexpr float shipSize = 250.f;
+
+	renderer.renderRectangle({data.playerPos - glm::vec2(shipSize/2, shipSize/2), 200, 200}, spaceShipsTexture,
+		Colors_White, {}, glm::degrees(spaceShipAngle) + 90.f, spaceShipsAtlas.get(1, 0)); // idx the right elm n the atlas
 
  
 	renderer.flush(); // called once
