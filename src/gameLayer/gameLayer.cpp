@@ -13,12 +13,15 @@
 #include <tiledRenderer.h>
 #include <bullet.h>
 #include <vector>
+#include <enemy.h>
 
 
 struct GameplayData { // place gameplay inside a struct so easier to reset the game correctly
 	glm::vec2 playerPos = {100, 100};
 
-	std::vector<Bullet> bullets;  
+	std::vector<Bullet> bullets; // bllt vctr
+
+	std::vector<Enemy> enemies; // enm vctr
 };
 
 GameplayData data;
@@ -188,9 +191,20 @@ bool gameLogic(float deltaTime) {
 #pragma endregion
 
 
+#pragma region handle enemies
+	for (int i = 0; i < data.enemies.size(); i++) {
+		//data.enemies[i].update(deltaTime);
+	}
+#pragma endregion
+
+
+#pragma region render enemies
+	for (auto &e : data.enemies) {e.render(renderer, spaceShipsTexture, spaceShipsAtlas);} // render all enemies using enhanced 4 loop
+#pragma endregion
+
+
 #pragma region render ship
-	renderer.renderRectangle({data.playerPos - glm::vec2(shipSize/2, shipSize/2), 200, 200}, spaceShipsTexture,
-		Colors_White, {}, glm::degrees(spaceShipAngle) + 90.f, spaceShipsAtlas.get(3, 0)); // idx the right elm n the atlas
+	renderSpaceShip(renderer, data.playerPos, shipSize, spaceShipsTexture, spaceShipsAtlas.get(3, 0), mouseDirection);
 #pragma endregion
  
 
@@ -208,6 +222,13 @@ bool gameLogic(float deltaTime) {
 	ImGui::Begin("debug");
 
 	ImGui::Text("Bullet count: %d", data.bullets.size()); // montiors whether bullets deload properly to avoid game crash
+	ImGui::Text("Enemies count: %d", data.enemies.size()); 
+
+	if (ImGui::Button("Spawn enemy")) {
+		Enemy e;
+		e.position = data.playerPos;
+		data.enemies.push_back(e);
+	}
 
 	ImGui::End();
 
