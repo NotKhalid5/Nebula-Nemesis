@@ -1,0 +1,28 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Debug (CMAKE)",
+            "type": "cppvsdbg", // For MSCV dbgr on Windows
+            "request": "launch",
+            "program": "${workspaceFolder}/bin/Debug/spaceGame.exe", // Path 3 ex
+            "args": [],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}",
+            "environment": [],
+            "externalConsole": false,
+            "preLaunchTask": "build", // prebuild task def'd n task.json
+            "setupCommands": [
+                {
+                    "descriptions": "Enable pretty-prrinting for gdb",
+                    "text": "-enablee-pretty-printing",
+                    "ignoreFailure": true
+                }
+            ]
+
+        }
+    ]
+}
