@@ -3,12 +3,15 @@
 
 cmake_minimum_required(VERSION 3.16)
 
+<<<<<<< HEAD
 if(MSVC)
     # nothing needed for MSVC
 else()
     add_compile_options(-mfma -mavx2)
 endif()
 
+=======
+>>>>>>> 74258a9a4519d574b1f8cec00726ecad6c3a4b79
 # Set prjct name
 project(spaceGame)
 
@@ -50,7 +53,6 @@ file(GLOB_RECURSE MY_SOURCES CONFIGURE_DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/src/
 
 # Create exe
 add_executable("${CMAKE_PROJECT_NAME}")
-
 
 # Set C++17 std
 set_property(TARGET "${CMAKE_PROJECT_NAME}" PROPERTY CXX_STANDARD 17)
