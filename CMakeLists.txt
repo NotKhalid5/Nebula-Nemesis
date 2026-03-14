@@ -3,15 +3,12 @@
 
 cmake_minimum_required(VERSION 3.16)
 
-<<<<<<< HEAD
 if(MSVC)
     # nothing needed for MSVC
 else()
     add_compile_options(-mfma -mavx2)
 endif()
 
-=======
->>>>>>> 74258a9a4519d574b1f8cec00726ecad6c3a4b79
 # Set prjct name
 project(spaceGame)
 
